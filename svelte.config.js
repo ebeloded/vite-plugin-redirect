@@ -1,17 +1,20 @@
-import redirect from 'vite-plugin-redirect';
+import adapter from '@sveltejs/adapter-auto';
+import preprocess from 'svelte-preprocess';
 
-const base = '/admin';
+export const base = '/admin';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  kit: {
-    paths: {
-      base
-    },
-    vite: {
-      plugins: [redirect({ '/': base })]
-    }
-  }
+	// Consult https://github.com/sveltejs/svelte-preprocess
+	// for more information about preprocessors
+	preprocess: preprocess(),
+
+	kit: {
+		paths: {
+			base
+		},
+		adapter: adapter()
+	}
 };
 
 export default config;

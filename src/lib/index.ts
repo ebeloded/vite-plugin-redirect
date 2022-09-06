@@ -1,28 +1,28 @@
 import type { PluginOption } from 'vite';
 
-const redirect = (
-  redirectMap: Record<string, string>,
-  immediate: boolean = false
+const vitePluginRedirect = (
+	redirectMap: Record<string, string>,
+	immediate: boolean = false
 ): PluginOption => ({
-  name: 'redirect',
-  configureServer: (server) => {
-    const returnFunc = () =>
-      server.middlewares.use((req, res, next) => {
-        if (!!redirectMap[req.url]) {
-          res.statusCode = 302;
-          res.setHeader('Location', redirectMap[req.url]);
-          res.setHeader('Content-Length', '0');
-          res.end();
-        } else {
-          next();
-        }
-      });
+	name: 'redirect',
+	configureServer: (server) => {
+		const returnFunc = () =>
+			server.middlewares.use((req, res, next) => {
+				if (req.url && redirectMap[req.url] !== undefined) {
+					res.statusCode = 307;
+					res.setHeader('Location', redirectMap[req.url]);
+					res.setHeader('Content-Length', '0');
+					res.end();
+				} else {
+					next();
+				}
+			});
 
-    if (!immediate) {
-      return returnFunc;
-    }
-    returnFunc();
-  }
+		if (!immediate) {
+			return returnFunc;
+		}
+		returnFunc();
+	}
 });
 
-export default redirect;
+export default vitePluginRedirect;
